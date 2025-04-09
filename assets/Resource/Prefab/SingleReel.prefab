@@ -706,7 +706,7 @@
         "__expectedType__": "cc.SpriteFrame"
       }
     ],
-    "speed": 300,
+    "speed": 600,
     "symbolHeight": 128,
     "_id": ""
   },

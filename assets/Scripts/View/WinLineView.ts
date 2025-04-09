@@ -10,11 +10,11 @@ export class WinLineView extends Component {
 
     // 5 組起點與終點（Vec2）
     private linePoints: { start: Vec2, end: Vec2 }[] = [
-        { start: new Vec2(100, 100), end: new Vec2(200, 200) },
-        { start: new Vec2(150, 100), end: new Vec2(250, 200) },
-        { start: new Vec2(200, 100), end: new Vec2(300, 200) },
-        { start: new Vec2(250, 100), end: new Vec2(350, 200) },
-        { start: new Vec2(300, 100), end: new Vec2(400, 200) },
+        { start: new Vec2(-256, 128), end: new Vec2(256, 128) },
+        { start: new Vec2(-256, 0), end: new Vec2(256, 0) },
+        { start: new Vec2(-256, -128), end: new Vec2(256, -128) },
+        { start: new Vec2(-256, 256), end: new Vec2(256, -256) },
+        { start: new Vec2(-256, -256), end: new Vec2(256, 256) },
     ];
 
     start() {

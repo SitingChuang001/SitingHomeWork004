@@ -19,9 +19,17 @@ export class ReelView extends Component {
     }
     test() {
         this.startSpin([[0, 1, 2], [0, 1, 2], [0, 1, 2]]);
-        setTimeout(() => {
-            this.reels.forEach(reel => reel.setState(ReelState.REBOUND));
-        }, 2000);
+    }
+    canStop() {
+        for (let i = 0; i < this.reels.length; i++) {
+            const reel = this.reels[i];
+            const delay = i * 0.1;
+
+            this.scheduleOnce(() => {
+                reel.rollingTime = reel.targetRollingTime;
+            }, delay);
+        }
+        return true;
     }
     reelStartSpin(result: number[]) {
         this.reels.forEach(reel => reel.startSpin(result));
