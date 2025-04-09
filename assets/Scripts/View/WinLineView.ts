@@ -1,27 +1,58 @@
-import { _decorator, Component, Graphics, Node } from 'cc';
+import { _decorator, Color, Component, Graphics, instantiate, Prefab, Vec2 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('WinLineView')
 export class WinLineView extends Component {
-    @property(Graphics)
-    graphics: Graphics = null!;
+    @property(Prefab)
+    linePrefab: Prefab = null!;
+
+    private lineGraphicsArray: Graphics[] = [];
+
+    // 5 組起點與終點（Vec2）
+    private linePoints: { start: Vec2, end: Vec2 }[] = [
+        { start: new Vec2(100, 100), end: new Vec2(200, 200) },
+        { start: new Vec2(150, 100), end: new Vec2(250, 200) },
+        { start: new Vec2(200, 100), end: new Vec2(300, 200) },
+        { start: new Vec2(250, 100), end: new Vec2(350, 200) },
+        { start: new Vec2(300, 100), end: new Vec2(400, 200) },
+    ];
+
     start() {
-        const g = this.graphics;
+        this.initLines();
+    }
 
-        // 設定線的樣式
+    initLines() {
+        for (let i = 0; i < this.linePoints.length; i++) {
+            const lineNode = instantiate(this.linePrefab);
+            lineNode.parent = this.node;
+
+            const graphics = lineNode.getComponent(Graphics)!;
+            this.lineGraphicsArray.push(graphics);
+
+            graphics.clear();
+        }
+    }
+
+    // 之後你可以用這個方法畫出指定第幾條線
+    showLine(index: number) {
+        if (index < 0 || index >= this.lineGraphicsArray.length) return;
+
+        const g = this.lineGraphicsArray[index];
+        const { start, end } = this.linePoints[index];
+
+        g.clear();
         g.lineWidth = 5;
-        g.strokeColor.fromHEX('#ff0000'); // 紅色線
-
-        // 開始畫線
-        g.moveTo(100, 100);  // 起點
-        g.lineTo(300, 300);  // 終點
-
-        // 畫出來
+        g.strokeColor = Color.YELLOW;
+        g.moveTo(start.x, start.y);
+        g.lineTo(end.x, end.y);
         g.stroke();
     }
 
-    update(deltaTime: number) {
-        
+    // 如果你要一次全部顯示
+    showAllLines() {
+        for (let i = 0; i < this.lineGraphicsArray.length; i++) {
+            this.showLine(i);
+        }
     }
 }
 

@@ -103,7 +103,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "12+BWk9thNpLYg5mUBoaMX",
+    "fileId": "fcF1IY2I5MgLAZYhT7B7MA",
     "prefabRootNode": {
       "__id__": 1
     },
@@ -133,7 +133,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "Symbol"
+    "value": "Symbol-001"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -215,7 +215,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "fcF1IY2I5MgLAZYhT7B7MA",
+    "fileId": "d4rM8PNjFL65+qNZaNdr4S",
     "prefabRootNode": {
       "__id__": 1
     },
@@ -245,7 +245,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "Symbol-001"
+    "value": "Symbol-002"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -327,7 +327,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "d4rM8PNjFL65+qNZaNdr4S",
+    "fileId": "8bmuzFii9CKqc1g6qAN/bb",
     "prefabRootNode": {
       "__id__": 1
     },
@@ -357,7 +357,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "Symbol-002"
+    "value": "Symbol-003"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -439,7 +439,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "8bmuzFii9CKqc1g6qAN/bb",
+    "fileId": "b0gWAHcudAzawl4PVPB9aJ",
     "prefabRootNode": {
       "__id__": 1
     },
@@ -469,7 +469,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "Symbol-003"
+    "value": "Symbol-004"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -551,7 +551,7 @@
   },
   {
     "__type__": "cc.PrefabInstance",
-    "fileId": "b0gWAHcudAzawl4PVPB9aJ",
+    "fileId": "37ZRefd/ZOo75Bd9dVDc8N",
     "prefabRootNode": {
       "__id__": 1
     },
@@ -581,7 +581,7 @@
     "propertyPath": [
       "_name"
     ],
-    "value": "Symbol-004"
+    "value": "Symbol-005"
   },
   {
     "__type__": "cc.TargetInfo",
@@ -675,6 +675,39 @@
     "__prefab": {
       "__id__": 45
     },
+    "symbolNodes": [
+      {
+        "__id__": 2
+      },
+      {
+        "__id__": 10
+      },
+      {
+        "__id__": 18
+      },
+      {
+        "__id__": 26
+      },
+      {
+        "__id__": 34
+      }
+    ],
+    "symbolSpriteFrames": [
+      {
+        "__uuid__": "de3e7211-782a-466a-a6e3-d7662bb64eb1@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "19a80a40-ee2b-4651-b5ad-ce45a6c76025@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "c102579f-01a5-4754-a9d5-23a7fc1de4f9@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      }
+    ],
+    "speed": 300,
+    "symbolHeight": 128,
     "_id": ""
   },
   {

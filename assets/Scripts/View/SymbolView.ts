@@ -6,12 +6,9 @@ export class SymbolView extends Component {
     @property(Sprite)
     sprite: Sprite = null;
 
-    @property({ type: [SpriteFrame] })
-    spriteFrames: SpriteFrame[] = [];
 
-
-    setSymbol(symbol: number) {
-        this.sprite.spriteFrame = this.spriteFrames[symbol];
+    setSymbol(symbol: SpriteFrame) {
+        this.sprite.spriteFrame = symbol;
     }
 
 }
