@@ -80,7 +80,7 @@ export class ReelView extends Component {
         director.emit(eventTable.ALL_REEL_STOP);
     }
 
-    private canStop() {
+    public canStop() {
         for (let i = 0; i < this.reels.length; i++) {
             const reel = this.reels[i];
             const delay = i * 0.1;

@@ -7,6 +7,7 @@ export class WinLineView extends Component {
     linePrefab: Prefab = null!;
 
     private lineGraphicsArray: Graphics[] = [];
+    public winLine: number[] = [];
 
     // 5 組起點與終點（Vec2）
     private linePoints: { start: Vec2, end: Vec2 }[] = [
@@ -16,6 +17,7 @@ export class WinLineView extends Component {
         { start: new Vec2(-256, 256), end: new Vec2(256, -256) },
         { start: new Vec2(-256, -256), end: new Vec2(256, 256) },
     ];
+
 
     start() {
         this.initLines();
@@ -33,7 +35,13 @@ export class WinLineView extends Component {
         }
     }
 
-    // 之後你可以用這個方法畫出指定第幾條線
+    clearLines() {
+        this.winLine = [];
+        for (let i = 0; i < this.lineGraphicsArray.length; i++) {
+            this.lineGraphicsArray[i].clear();
+        }
+    }
+
     showLine(index: number) {
         if (index < 0 || index >= this.lineGraphicsArray.length) return;
 
@@ -48,10 +56,18 @@ export class WinLineView extends Component {
         g.stroke();
     }
 
-    // 如果你要一次全部顯示
+    showSingleWin() { //做promise
+        for (let i = 0; i < this.winLine.length; i++) {
+            this.showLine(this.winLine[i]);
+        }
+        this.scheduleOnce(() => {
+            this.clearLines();
+        }, 1);
+    }
+
     showAllLines() {
-        for (let i = 0; i < this.lineGraphicsArray.length; i++) {
-            this.showLine(i);
+        for (let i = 0; i < this.winLine.length; i++) {
+            this.showLine(this.winLine[i]);
         }
     }
 }
