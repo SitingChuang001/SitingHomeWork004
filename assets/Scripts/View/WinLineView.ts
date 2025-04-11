@@ -1,4 +1,5 @@
-import { _decorator, Color, Component, Graphics, instantiate, Prefab, Vec2 } from 'cc';
+import { _decorator, Color, Component, director, Graphics, instantiate, Prefab, Vec2 } from 'cc';
+import { eventTable } from './ReelView';
 const { ccclass, property } = _decorator;
 
 @ccclass('WinLineView')
@@ -60,15 +61,15 @@ export class WinLineView extends Component {
         for (let i = 0; i < this.winLine.length; i++) {
             this.showLine(this.winLine[i]);
         }
-        this.scheduleOnce(() => {
-            this.clearLines();
-        }, 1);
     }
 
     showAllLines() {
         for (let i = 0; i < this.winLine.length; i++) {
             this.showLine(this.winLine[i]);
         }
+        this.scheduleOnce(() => {
+            director.emit(eventTable.ALL_WIN_DISPLAYED);
+        }, 3);
     }
 }
 

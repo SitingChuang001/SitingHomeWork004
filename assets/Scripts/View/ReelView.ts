@@ -36,10 +36,7 @@ export class ReelView extends Component {
                     .to(0.15, { position: new Vec3(originalPos.x, originalPos.y + bounceHeight, originalPos.z) }, { easing: 'quadOut' })
                     .to(0.15, { position: originalPos }, { easing: 'quadIn' })
                     .call(() => {
-                        reel.startSpin(this.result[i]);
-                        if (i === this.reels.length - 1) {
-                            this.result = [];
-                        }
+                        reel.startSpin(this.result[i].slice());
                     })
                     .start();
             }, delay);
@@ -95,6 +92,7 @@ export class ReelView extends Component {
 
 export enum eventTable {
     SINGLE_REEL_REBOUND,
-    ALL_REEL_STOP
+    ALL_REEL_STOP,
+    ALL_WIN_DISPLAYED
 }
 

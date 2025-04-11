@@ -1889,7 +1889,15 @@
     "winLineView": {
       "__id__": 55
     },
-    "scoreLabel": null,
+    "scoreLabel": {
+      "__id__": 51
+    },
+    "spinButton": {
+      "__id__": 37
+    },
+    "stopButton": {
+      "__id__": 56
+    },
     "_id": "66iQ21OSNCnam6xqQ0GcIw"
   },
   {

@@ -7,6 +7,7 @@ export enum ReelState {
     STOP,
     BOUNCE,
     ROLLING,
+    ROLLING_STOP,
     REBOUND
 }
 
@@ -55,10 +56,6 @@ export class SingleReelView extends Component {
                 const node = this.symbolNodes[i];
                 const pos = node.position;
                 node.setPosition(pos.x, pos.y - this.speed * deltaTime, pos.z);
-            }
-            for (let i = 0; i < this.symbolNodes.length; i++) {
-                const node = this.symbolNodes[i];
-                const pos = node.position;
                 if (pos.y < -this.symbolHeight * 2) {
                     // 移出底部，重設到最上
                     const maxY = Math.max(...this.symbolNodes.map(n => n.position.y));
@@ -69,7 +66,7 @@ export class SingleReelView extends Component {
                     this.symbols[i].setSymbol(this.symbolSpriteFrames[randomIndex]);
                 }
             }
-
+            
             if (this.rollingTime >= this.targetRollingTime) {
                 this.setState(ReelState.REBOUND);
             }
@@ -101,16 +98,12 @@ export class SingleReelView extends Component {
                         const randomIndex = Math.floor(Math.random() * this.symbolSpriteFrames.length);
                         this.symbols[i].setSymbol(this.symbolSpriteFrames[randomIndex]);
                         if (this.count === 2) {
-                            this.setState(ReelState.REBOUND);
+                            this.stopNotification();
                             this.count = 0;
                         }
                     }
                 }
             }
-        }
-
-        if (this.state === ReelState.REBOUND && this.result.length === 0) {
-            this.stopNotification();
         }
     }
 
