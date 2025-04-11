@@ -23,6 +23,7 @@ export class ReelView extends Component {
     public setResult(result: number[][]) {
         this.result = result;
     }
+    
     startSpin() {
         for (let i = 0; i < this.reels.length; i++) {
             const reel = this.reels[i];
@@ -42,26 +43,10 @@ export class ReelView extends Component {
             }, delay);
         }
     }
-    test() {
-        if (this.result.length === 0) {
-            var randomResult: number[][] = [];
-            for (let i = 0; i < this.reels.length; i++) {
-                const reel = this.reels[i];
-                const reelResult: number[] = [];
-                for (let j = 0; j < 3; j++) {
-                    const randomIndex = Math.floor(Math.random() * reel.symbolSpriteFrames.length);
-                    reelResult.push(randomIndex);
-                }
-                randomResult.push(reelResult);
-            }
-            this.setResult(randomResult);
-        }
-        this.startSpin();
-    }
 
     protected onSingleReelRebound(index: number) {
         const originalPos = this.reels[index].node.position.clone();
-        const bounceHeight = 40;
+        const bounceHeight = 60;
         tween(this.reels[index].node)
             .to(0.15, { position: new Vec3(originalPos.x, originalPos.y - bounceHeight, originalPos.z) }, { easing: 'quadOut' })
             .to(0.15, { position: originalPos }, { easing: 'quadIn' })

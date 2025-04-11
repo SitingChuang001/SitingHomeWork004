@@ -56,6 +56,11 @@ export class SingleReelView extends Component {
                 const node = this.symbolNodes[i];
                 const pos = node.position;
                 node.setPosition(pos.x, pos.y - this.speed * deltaTime, pos.z);
+            }
+
+            for (let i = 0; i < this.symbolNodes.length; i++) {
+                const node = this.symbolNodes[i];
+                const pos = node.position;
                 if (pos.y < -this.symbolHeight * 2) {
                     // 移出底部，重設到最上
                     const maxY = Math.max(...this.symbolNodes.map(n => n.position.y));
