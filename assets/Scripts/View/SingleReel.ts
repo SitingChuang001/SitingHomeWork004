@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Node, SpriteFrame } from 'cc';
+import { _decorator, Component, director, Layout, Node, SpriteFrame } from 'cc';
 import { SymbolView } from './Symbol';
 import { eventTable } from './ReelManager';
 const { ccclass, property } = _decorator;
@@ -11,8 +11,8 @@ export enum ReelState {
     REBOUND
 }
 
-@ccclass('SingleReelView')
-export class SingleReelView extends Component {
+@ccclass('SingleReel')
+export class SingleReel extends Component {
     private state: ReelState = ReelState.STOP;
 
     @property([Node])
@@ -26,6 +26,7 @@ export class SingleReelView extends Component {
 
     @property
     symbolHeight: number = 128;
+    public reelLayout: Layout = null!;
 
     public index: number = 0;
     private symbols: SymbolView[] = [];
@@ -38,6 +39,7 @@ export class SingleReelView extends Component {
 
     onLoad() {
         this.symbols = this.symbolNodes.map(n => n.getComponent(SymbolView)!);
+        this.reelLayout = this.getComponent(Layout)!;
     }
 
     startSpin(result: number[]) {
@@ -71,7 +73,7 @@ export class SingleReelView extends Component {
                     this.symbols[i].setSymbol(this.symbolSpriteFrames[randomIndex]);
                 }
             }
-            
+
             if (this.rollingTime >= this.targetRollingTime) {
                 this.setState(ReelState.REBOUND);
             }
@@ -80,7 +82,6 @@ export class SingleReelView extends Component {
         }
 
         if (this.state === ReelState.REBOUND) {
-
             for (let i = 0; i < this.symbolNodes.length; i++) {
                 const node = this.symbolNodes[i];
                 const pos = node.position;
@@ -89,26 +90,40 @@ export class SingleReelView extends Component {
             for (let i = 0; i < this.symbolNodes.length; i++) {
                 const node = this.symbolNodes[i];
                 const pos = node.position;
-                if (pos.y < -this.symbolHeight * 2) {
+                if (pos.y < -this.symbolHeight * 2 && this.count < 2) {
                     // 移出底部，重設到最上
-                    const maxY = Math.max(...this.symbolNodes.map(n => n.position.y));
-                    node.setPosition(pos.x, maxY + this.symbolHeight, pos.z);
-
                     if (this.result.length > 0) {
                         const symbolIndex = this.result[this.result.length - 1];
                         this.result.pop();
                         this.symbols[i].setSymbol(this.symbolSpriteFrames[symbolIndex]);
+                        const maxY = Math.max(...this.symbolNodes.map(n => n.position.y));
+                        node.setPosition(pos.x, maxY + this.symbolHeight, pos.z);
                     } else {
-                        this.count++;
-                        const randomIndex = Math.floor(Math.random() * this.symbolSpriteFrames.length);
-                        this.symbols[i].setSymbol(this.symbolSpriteFrames[randomIndex]);
+                        this.count++;//最後一顆隨機補值
                         if (this.count === 2) {
                             this.stopNotification();
                             this.count = 0;
+                            this.sortSymbols();
+                            return;
                         }
+                        const randomIndex = Math.floor(Math.random() * this.symbolSpriteFrames.length);
+                        this.symbols[i].setSymbol(this.symbolSpriteFrames[randomIndex]);
+                        const maxY = Math.max(...this.symbolNodes.map(n => n.position.y));
+                        node.setPosition(pos.x, maxY + this.symbolHeight, pos.z);
                     }
                 }
             }
+        }
+    }
+
+    sortSymbols() {
+        //照 Y 軸從高到低排序
+        const sortedNodes = [...this.symbolNodes].sort((a, b) => b.position.y - a.position.y);
+        //設定第一個 Y 
+        const startY = (this.symbolNodes.length - 1) * this.symbolHeight / 2;
+        for (let i = 0; i < sortedNodes.length; i++) {
+            const node = sortedNodes[i];
+            node.setPosition(0, startY - i * this.symbolHeight, 0);
         }
     }
 

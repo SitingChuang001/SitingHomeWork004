@@ -1,11 +1,11 @@
 import { _decorator, Component, director, Node, tween, Vec3 } from 'cc';
-import { ReelState, SingleReelView } from './SingleReel';
+import { ReelState, SingleReel } from './SingleReel';
 const { ccclass, property } = _decorator;
 
 @ccclass('ReelView')
 export class ReelView extends Component {
-    @property([SingleReelView])
-    public reels: SingleReelView[] = [];
+    @property([SingleReel])
+    public reels: SingleReel[] = [];
 
     public result: number[][] = [];
 
@@ -62,6 +62,13 @@ export class ReelView extends Component {
         director.emit(eventTable.ALL_REEL_STOP);
     }
 
+    public forceStop() {
+        for (let i = 0; i < this.reels.length; i++) {
+            const reel = this.reels[i];
+            reel.rollingTime = reel.targetRollingTime;
+            reel.setState(ReelState.REBOUND);
+        }
+    }
     public canStop() {
         for (let i = 0; i < this.reels.length; i++) {
             const reel = this.reels[i];
