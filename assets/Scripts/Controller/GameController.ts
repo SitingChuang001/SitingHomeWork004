@@ -1,6 +1,6 @@
 import { _decorator, Component, director, Label, Node } from 'cc';
-import { WinLineView } from '../View/WinLineView';
-import { eventTable, ReelView } from '../View/ReelView';
+import { WinLineView } from '../View/WinLine';
+import { eventTable, ReelView } from '../View/ReelManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameController')

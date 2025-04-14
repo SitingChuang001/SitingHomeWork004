@@ -1,5 +1,5 @@
 import { _decorator, Color, Component, director, Graphics, instantiate, Prefab, Vec2 } from 'cc';
-import { eventTable } from './ReelView';
+import { eventTable } from './ReelManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('WinLineView')

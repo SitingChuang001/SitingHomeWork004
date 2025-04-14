@@ -1,5 +1,5 @@
 import { _decorator, Component, director, Node, tween, Vec3 } from 'cc';
-import { ReelState, SingleReelView } from './SingleReelView';
+import { ReelState, SingleReelView } from './SingleReel';
 const { ccclass, property } = _decorator;
 
 @ccclass('ReelView')

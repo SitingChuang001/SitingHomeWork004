@@ -1,6 +1,6 @@
 import { _decorator, Component, director, Node, SpriteFrame } from 'cc';
-import { SymbolView } from './SymbolView';
-import { eventTable } from './ReelView';
+import { SymbolView } from './Symbol';
+import { eventTable } from './ReelManager';
 const { ccclass, property } = _decorator;
 
 export enum ReelState {
