@@ -17,6 +17,7 @@ export class ReelView extends Component {
     public reelPrefab: Prefab = null!;
     @property(Prefab)
     public symbolPrefab: Prefab = null!;
+    private resolve:Function = null!;
 
 
     protected onLoad(): void {
@@ -69,7 +70,8 @@ export class ReelView extends Component {
         this.result = result;
     }
 
-    startSpin() {
+    startSpin(resolve: () => void) {
+        this.resolve = resolve;
         for (let i = 0; i < this.reels.length; i++) {
             const reel = this.reels[i];
             const delay = i * 0.3;
@@ -82,13 +84,9 @@ export class ReelView extends Component {
     protected onSingleReelRebound(index: number) {
         if (index === this.reels.length - 1) {
             this.scheduleOnce(() => {
-                this.onAllReelStop();
-            }, 0.5);//滾停後等一下下再顯示贏分
+                this.resolve();
+            }, 0.5);//滾停後等一下再顯示贏分
         }
-    }
-
-    protected onAllReelStop() {
-        director.emit(eventTable.ALL_REEL_STOP);
     }
 
     public forceStop() {
@@ -112,7 +110,5 @@ export class ReelView extends Component {
 
 export enum eventTable {
     SINGLE_REEL_REBOUND_COMPLETE,
-    ALL_REEL_STOP,
-    ALL_WIN_DISPLAYED
 }
 

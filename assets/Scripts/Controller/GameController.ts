@@ -41,28 +41,20 @@ export class GameController extends Component {
         'C': 2,
     };
 
-    protected onEnable(): void {
-        director.on(eventTable.ALL_REEL_STOP, this.onAllReelStop, this);
-        director.on(eventTable.ALL_WIN_DISPLAYED, this.onAllWinDisplayed, this);
-    }
-    protected onDisable(): void {
-        director.off(eventTable.ALL_REEL_STOP, this.onAllReelStop, this);
-        director.off(eventTable.ALL_WIN_DISPLAYED, this.onAllWinDisplayed, this);
-    }
     protected start(): void {
         this.idleSetting();
     }
-    protected onAllReelStop() {
-        this.totalWin = this.calculateScore(this.reelResult);
-        this.updateScore();
-        if (this.totalWin > 0) {
-            this.winLineView.showAllLines();
-        } else {
-            this.idleSetting();
-        }
-    }
-    protected onAllWinDisplayed() {
-        this.idleSetting();
+
+    protected calculateWin():Promise<void> {
+        return new Promise((resolve) => {
+            this.totalWin = this.calculateScore(this.reelResult);
+            this.updateScore();
+            if (this.totalWin > 0) {
+                this.winLineView.showAllLines(resolve);
+            } else {
+                resolve();
+            }
+        });
     }
 
     private getResult(): Array<Array<number>> {
@@ -111,6 +103,8 @@ export class GameController extends Component {
     }
     private async onSpinButton() {
         await this.spin();
+        await this.calculateWin();
+        this.idleSetting();
     }
     private onStopButton() {
         this.reelView.forceStop();
@@ -136,10 +130,7 @@ export class GameController extends Component {
     private spin(): Promise<void> {
         return new Promise((resolve) => {
             this.spinSetting();
-            this.reelView.startSpin();
-            while (this.spinComplete) {
-                resolve()
-            }
+            this.reelView.startSpin(resolve);
         });
     }
     private spinSetting() {

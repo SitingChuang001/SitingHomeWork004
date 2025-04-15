@@ -63,12 +63,12 @@ export class WinLineView extends Component {
         }
     }
 
-    showAllLines() {
+    showAllLines(resolve: () => void) {
         for (let i = 0; i < this.winLine.length; i++) {
             this.showLine(this.winLine[i]);
         }
         this.scheduleOnce(() => {
-            director.emit(eventTable.ALL_WIN_DISPLAYED);
+            resolve();
         }, 3);
     }
 }
