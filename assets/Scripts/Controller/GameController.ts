@@ -116,10 +116,14 @@ export class GameController extends Component {
         this.reelView.forceStop();
     }
     private onConfirmButton() {
-        const input = this.calculateInput();
-        if (input) {
-            this.inputBox.string = '';
-            this.reelResult = input;
+        try {
+            const input = this.calculateInput();
+            if (input) {
+                this.inputBox.string = '';
+                this.reelResult = input;
+            }
+        } catch (e) {
+            console.warn("Invalid input");
         }
     }
     private calculateInput(): number[][] | undefined {

@@ -13,51 +13,33 @@ export class ReelView extends Component {
         this.reels.forEach(reel => {
             reel.index = this.reels.indexOf(reel);
         });
-        director.on(eventTable.SINGLE_REEL_REBOUND, this.onSingleReelRebound, this);
+        director.on(eventTable.SINGLE_REEL_REBOUND_COMPLETE, this.onSingleReelRebound, this);
     }
 
     protected onDestroy(): void {
-        director.off(eventTable.SINGLE_REEL_REBOUND, this.onSingleReelRebound, this);
+        director.off(eventTable.SINGLE_REEL_REBOUND_COMPLETE, this.onSingleReelRebound, this);
     }
 
     public setResult(result: number[][]) {
         this.result = result;
     }
-    
+
     startSpin() {
         for (let i = 0; i < this.reels.length; i++) {
             const reel = this.reels[i];
             const delay = i * 0.3;
-            reel.setState(ReelState.BOUNCE);
             this.scheduleOnce(() => {
-                const originalPos = reel.node.position.clone();
-                const bounceHeight = 20;
-
-                tween(reel.node)
-                    .to(0.15, { position: new Vec3(originalPos.x, originalPos.y + bounceHeight, originalPos.z) }, { easing: 'quadOut' })
-                    .to(0.15, { position: originalPos }, { easing: 'quadIn' })
-                    .call(() => {
-                        reel.startSpin(this.result[i].slice());
-                    })
-                    .start();
+                reel.startSpin(this.result[i].slice());
             }, delay);
         }
     }
 
     protected onSingleReelRebound(index: number) {
-        const originalPos = this.reels[index].node.position.clone();
-        const bounceHeight = 60;
-        tween(this.reels[index].node)
-            .to(0.15, { position: new Vec3(originalPos.x, originalPos.y - bounceHeight, originalPos.z) }, { easing: 'quadOut' })
-            .to(0.15, { position: originalPos }, { easing: 'quadIn' })
-            .call(() => {
-                if (index === this.reels.length - 1) {
-                    this.scheduleOnce(() => {
-                    this.onAllReelStop();
-                    }, 0.5);//滾停後等一下下再顯示贏分
-                }
-            })
-            .start();
+        if (index === this.reels.length - 1) {
+            this.scheduleOnce(() => {
+                this.onAllReelStop();
+            }, 0.5);//滾停後等一下下再顯示贏分
+        }
     }
 
     protected onAllReelStop() {
@@ -84,7 +66,7 @@ export class ReelView extends Component {
 }
 
 export enum eventTable {
-    SINGLE_REEL_REBOUND,
+    SINGLE_REEL_REBOUND_COMPLETE,
     ALL_REEL_STOP,
     ALL_WIN_DISPLAYED
 }

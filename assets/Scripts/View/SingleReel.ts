@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Layout, Node, SpriteFrame } from 'cc';
+import { _decorator, Component, director, Layout, Node, SpriteFrame, tween, Vec3 } from 'cc';
 import { SymbolView } from './Symbol';
 import { eventTable } from './ReelManager';
 const { ccclass, property } = _decorator;
@@ -43,9 +43,19 @@ export class SingleReel extends Component {
     }
 
     startSpin(result: number[]) {
-        this.result = result;
-        this.rollingTime = 0;
-        this.state = ReelState.ROLLING;
+        const originalPos = this.node.position.clone();
+        const bounceHeight = 20;
+
+        tween(this.node)
+            .to(0.15, { position: new Vec3(originalPos.x, originalPos.y + bounceHeight, originalPos.z) }, { easing: 'quadOut' })
+            .to(0.15, { position: originalPos }, { easing: 'quadIn' })
+            .call(() => {
+                this.result = result.slice();
+                this.rollingTime = 0;
+                this.state = ReelState.ROLLING;
+            })
+            .start();
+
     }
 
     update(deltaTime: number) {
@@ -128,7 +138,16 @@ export class SingleReel extends Component {
     }
 
     stopNotification() {
-        director.emit(eventTable.SINGLE_REEL_REBOUND, this.index);
+        const originalPos = this.node.position.clone();
+        const bounceHeight = 60;
+        tween(this.node)
+            .to(0.15, { position: new Vec3(originalPos.x, originalPos.y - bounceHeight, originalPos.z) }, { easing: 'quadOut' })
+            .to(0.15, { position: originalPos }, { easing: 'quadIn' })
+            .call(() => {
+                director.emit(eventTable.SINGLE_REEL_REBOUND_COMPLETE, this.index);
+            })  
+            .start();
+        
         this.setState(ReelState.STOP);
     }
 
