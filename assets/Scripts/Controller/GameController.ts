@@ -94,7 +94,6 @@ export class GameController extends Component {
         return scoreSum;
     }
     private setWinLines(index: number) {
-        this.winLineView.winLine = [];
         this.winLineView.winLine.push(index);
     }
     private updateScore() {
