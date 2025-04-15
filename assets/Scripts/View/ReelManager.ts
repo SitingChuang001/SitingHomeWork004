@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Node, tween, Vec3 } from 'cc';
+import { _decorator, Component, director, instantiate, Node, Prefab, tween, UITransform, Vec3 } from 'cc';
 import { ReelState, SingleReel } from './SingleReel';
 const { ccclass, property } = _decorator;
 
@@ -9,12 +9,57 @@ export class ReelView extends Component {
 
     public result: number[][] = [];
 
+    @property(Number)
+    public reelLayoutX: number = 0;
+    @property(Number)
+    public reelLayoutY: number = 0;
+    @property(Prefab)
+    public reelPrefab: Prefab = null!;
+    @property(Prefab)
+    public symbolPrefab: Prefab = null!;
+
+
     protected onLoad(): void {
-        this.reels.forEach(reel => {
-            reel.index = this.reels.indexOf(reel);
-        });
+        this.initReelLayout();
         director.on(eventTable.SINGLE_REEL_REBOUND_COMPLETE, this.onSingleReelRebound, this);
     }
+
+    private initReelLayout() {
+        const symbolWidth = this.symbolPrefab.data.width;
+        const symbolHeight = this.symbolPrefab.data.height;
+
+        const layoutWidth = this.reelLayoutX * symbolWidth;
+        const layoutHeight = this.reelLayoutY * symbolHeight;
+
+        this.node.getComponent(UITransform).setContentSize(layoutWidth, layoutHeight);
+
+        const startX = -layoutWidth / 2 + symbolWidth / 2;
+        const startY = -layoutHeight / 2 - symbolHeight / 2;
+
+        for (let i = 0; i < this.reelLayoutX; i++) {
+            const reel = instantiate(this.reelPrefab);
+            reel.name = `Reel${i}`;
+            const singleReel = reel.getComponent(SingleReel)!;
+            singleReel.index = i;
+
+            const x = startX + i * symbolWidth;
+            reel.setPosition(x, 0, 0);
+
+            this.reels.push(singleReel);
+            this.node.addChild(reel);
+
+
+            for (let j = 0; j < this.reelLayoutY + 2; j++) {
+                const symbol = instantiate(this.symbolPrefab);
+                symbol.parent = reel;
+                const y = startY + j * symbolHeight;
+                symbol.setPosition(0, y, 0);
+                singleReel.symbolNodes.push(symbol);
+            }
+            singleReel.initSymbols();
+        }
+    }
+
 
     protected onDestroy(): void {
         director.off(eventTable.SINGLE_REEL_REBOUND_COMPLETE, this.onSingleReelRebound, this);
@@ -29,7 +74,7 @@ export class ReelView extends Component {
             const reel = this.reels[i];
             const delay = i * 0.3;
             this.scheduleOnce(() => {
-                reel.startSpin(this.result[i].slice());
+                reel.startSpin(this.result[i]);
             }, delay);
         }
     }

@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Layout, Node, SpriteFrame, tween, Vec3 } from 'cc';
+import { _decorator, Component, director, Node, SpriteFrame, tween, Vec3 } from 'cc';
 import { SymbolView } from './Symbol';
 import { eventTable } from './ReelManager';
 const { ccclass, property } = _decorator;
@@ -26,7 +26,6 @@ export class SingleReel extends Component {
 
     @property
     symbolHeight: number = 128;
-    public reelLayout: Layout = null!;
 
     public index: number = 0;
     private symbols: SymbolView[] = [];
@@ -39,7 +38,13 @@ export class SingleReel extends Component {
 
     onLoad() {
         this.symbols = this.symbolNodes.map(n => n.getComponent(SymbolView)!);
-        this.reelLayout = this.getComponent(Layout)!;
+    }
+
+    initSymbols() {
+        for (let i = 0; i < this.symbolNodes.length; i++) {
+            const node = this.symbolNodes[i];
+            this.symbols.push(node.getComponent(SymbolView)!);
+        }
     }
 
     startSpin(result: number[]) {
