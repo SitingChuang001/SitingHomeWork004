@@ -52,7 +52,9 @@ export class ReelView extends Component {
             .to(0.15, { position: originalPos }, { easing: 'quadIn' })
             .call(() => {
                 if (index === this.reels.length - 1) {
+                    this.scheduleOnce(() => {
                     this.onAllReelStop();
+                    }, 0.5);//滾停後等一下下再顯示贏分
                 }
             })
             .start();
@@ -66,7 +68,6 @@ export class ReelView extends Component {
         for (let i = 0; i < this.reels.length; i++) {
             const reel = this.reels[i];
             reel.rollingTime = reel.targetRollingTime;
-            reel.setState(ReelState.REBOUND);
         }
     }
     public canStop() {

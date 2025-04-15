@@ -32,7 +32,7 @@ export class SingleReel extends Component {
     private symbols: SymbolView[] = [];
 
     public rollingTime = 0;
-    public targetRollingTime = 4;
+    public targetRollingTime = 3;
 
     private result: number[] = [];
     private count = 0;
