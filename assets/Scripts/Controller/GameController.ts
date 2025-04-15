@@ -1,4 +1,4 @@
-import { _decorator, Component, director, Label, Node } from 'cc';
+import { _decorator, Button, Component, director, EditBox, Label, Node } from 'cc';
 import { WinLineView } from '../View/WinLine';
 import { eventTable, ReelView } from '../View/ReelManager';
 const { ccclass, property } = _decorator;
@@ -15,6 +15,8 @@ export class GameController extends Component {
     spinButton: Node = null!;
     @property(Node)
     stopButton: Node = null!;
+    @property(EditBox)
+    inputBox: EditBox = null!;
 
     private totalWin: number = 0;
     private reelResult: number[][] = [];
@@ -32,6 +34,11 @@ export class GameController extends Component {
         '0': 3,
         '1': 2,
         '2': 1,
+    };
+    private symbolID: Record<string, number> = {
+        'A': 0,
+        'B': 1,
+        'C': 2,
     };
 
     protected onEnable(): void {
@@ -59,6 +66,9 @@ export class GameController extends Component {
     }
 
     private getResult(): Array<Array<number>> {
+        if (this.reelResult.length > 0) {
+            return this.reelResult;
+        }
         var randomResult: Array<Array<number>> = new Array<Array<number>>();
         for (let i = 0; i < this.reelView.reels.length; i++) {
             const reel = this.reelView.reels[i];
@@ -102,6 +112,23 @@ export class GameController extends Component {
     private async onSpinButton() {
         await this.spin();
     }
+    private onStopButton() {
+        this.reelView.forceStop();
+    }
+    private onConfirmButton() {
+        const input = this.calculateInput();
+        if (input) {
+            this.inputBox.string = '';
+            this.reelResult = input;
+        }
+    }
+    private calculateInput(): number[][] | undefined {
+        const input = this.inputBox.string.split(',').map(s => this.symbolID[s].valueOf());
+        if (input.length !== 9) {
+            return;
+        }
+        return [input.slice(0, 3), input.slice(3, 6), input.slice(6, 9)];
+    }
     private spin(): Promise<void> {
         return new Promise((resolve) => {
             this.spinSetting();
@@ -126,9 +153,5 @@ export class GameController extends Component {
         this.reelResult = [];
         this.winLineView.clearLines();
     }
-    private onStopButton() {
-        this.reelView.canStop();
-    }
-
 }
 
