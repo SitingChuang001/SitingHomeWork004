@@ -20,7 +20,6 @@ export class GameController extends Component {
 
     private totalWin: number = 0;
     private reelResult: number[][] = [];
-    private spinComplete: boolean = false;
     //贏分設定檔
     private paylines = [
         [0, 0, 0], // 第一條線
@@ -102,6 +101,9 @@ export class GameController extends Component {
         this.scoreLabel.string = this.totalWin.toString();
     }
     private async onSpinButton() {
+        this.winLineView.initWinLine();
+        this.totalWin = 0;
+        this.updateScore();
         await this.spin();
         await this.calculateWin();
         this.idleSetting();
@@ -140,13 +142,9 @@ export class GameController extends Component {
         this.reelView.setResult(this.reelResult);
     }
     private idleSetting() {
-        this.spinComplete = false;
         this.spinButton.active = true;
         this.stopButton.active = false;
-        this.totalWin = 0;
-        this.updateScore();
         this.reelResult = [];
-        this.winLineView.clearLines();
     }
 }
 

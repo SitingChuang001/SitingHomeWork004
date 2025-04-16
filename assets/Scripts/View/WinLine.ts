@@ -8,6 +8,8 @@ export class WinLineView extends Component {
     linePrefab: Prefab = null!;
 
     private lineGraphicsArray: Graphics[] = [];
+    private awardingLoop: boolean = false;
+    private awardingIndex: number = 0;
     public winLine: number[] = [];
 
     // 5 組起點與終點（Vec2）
@@ -35,9 +37,14 @@ export class WinLineView extends Component {
             graphics.clear();
         }
     }
+    initWinLine() {
+        this.winLine = [];
+        this.awardingIndex = 0;
+        this.awardingLoop = false;
+        this.clearLines();
+    }
 
     clearLines() {
-        this.winLine = [];
         for (let i = 0; i < this.lineGraphicsArray.length; i++) {
             this.lineGraphicsArray[i].clear();
         }
@@ -57,10 +64,22 @@ export class WinLineView extends Component {
         g.stroke();
     }
 
-    showSingleWin() { //做promise
-        for (let i = 0; i < this.winLine.length; i++) {
-            this.showLine(this.winLine[i]);
+    showSingleWin() {
+        this.awardingLoop = true;
+        this.showLineOneByOne();
+    }
+
+    showLineOneByOne() {
+        if (!this.awardingLoop) return;
+        if (this.awardingIndex === this.winLine.length){
+            this.awardingIndex = 0;
         }
+        this.clearLines();
+        this.showLine(this.winLine[this.awardingIndex]);
+        this.awardingIndex++;
+        this.scheduleOnce(() => {
+            this.showLineOneByOne();
+        }, 2);
     }
 
     showAllLines(resolve: () => void) {
@@ -68,6 +87,7 @@ export class WinLineView extends Component {
             this.showLine(this.winLine[i]);
         }
         this.scheduleOnce(() => {
+            this.showSingleWin();
             resolve();
         }, 3);
     }
