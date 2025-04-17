@@ -1,25 +1,15 @@
-import { _decorator, Color, Component, director, Graphics, instantiate, Prefab, Vec2 } from 'cc';
+import { _decorator, Color, Component, Graphics, Node, Sprite, tween, UIOpacity } from 'cc';
 import { eventTable } from './ReelManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('WinLineView')
 export class WinLineView extends Component {
-    @property(Prefab)
-    linePrefab: Prefab = null!;
 
-    private lineGraphicsArray: Graphics[] = [];
     private awardingLoop: boolean = false;
     private awardingIndex: number = 0;
     public winLine: number[] = [];
-
-    // 5 組起點與終點（Vec2）
-    private linePoints: { start: Vec2, end: Vec2 }[] = [
-        { start: new Vec2(-256, 128), end: new Vec2(256, 128) },
-        { start: new Vec2(-256, 0), end: new Vec2(256, 0) },
-        { start: new Vec2(-256, -128), end: new Vec2(256, -128) },
-        { start: new Vec2(-256, 256), end: new Vec2(256, -256) },
-        { start: new Vec2(-256, -256), end: new Vec2(256, 256) },
-    ];
+    private lines: Sprite[] = [];
+    private linesOpacity: UIOpacity[] = [];
 
 
     start() {
@@ -27,14 +17,11 @@ export class WinLineView extends Component {
     }
 
     initLines() {
-        for (let i = 0; i < this.linePoints.length; i++) {
-            const lineNode = instantiate(this.linePrefab);
-            lineNode.parent = this.node;
-
-            const graphics = lineNode.getComponent(Graphics)!;
-            this.lineGraphicsArray.push(graphics);
-
-            graphics.clear();
+        for (let i = 0; i < this.node.children.length; i++) {
+            var node = this.node.children[i];
+            node.active = false;
+            this.lines.push(node.getComponent(Sprite)!);
+            this.linesOpacity.push(node.getComponent(UIOpacity)!);
         }
     }
     initWinLine() {
@@ -45,23 +32,16 @@ export class WinLineView extends Component {
     }
 
     clearLines() {
-        for (let i = 0; i < this.lineGraphicsArray.length; i++) {
-            this.lineGraphicsArray[i].clear();
+        for (let i = 0; i < this.lines.length; i++) {
+            this.linesOpacity[i].opacity = 0;
+            this.lines[i].node.active = false;
         }
     }
 
     showLine(index: number) {
-        if (index < 0 || index >= this.lineGraphicsArray.length) return;
-
-        const g = this.lineGraphicsArray[index];
-        const { start, end } = this.linePoints[index];
-
-        g.clear();
-        g.lineWidth = 5;
-        g.strokeColor = Color.YELLOW;
-        g.moveTo(start.x, start.y);
-        g.lineTo(end.x, end.y);
-        g.stroke();
+        if (index < 0 || index >= this.lines.length) return;
+        this.lines[index].node.active = true;
+        this.linesOpacity[index].opacity = 255;
     }
 
     showSingleWin() {
@@ -76,10 +56,16 @@ export class WinLineView extends Component {
         }
         this.clearLines();
         this.showLine(this.winLine[this.awardingIndex]);
+        const opacityComp = this.linesOpacity[this.winLine[this.awardingIndex]];
+        tween(opacityComp)
+            .repeat(2, tween(opacityComp)
+                .to(1, { opacity: 0 }, { easing: 'quadOut' })
+                .to(1, { opacity: 255 }, { easing: 'quadIn' }))
+            .call(() => {
         this.awardingIndex++;
-        this.scheduleOnce(() => {
-            this.showLineOneByOne();
-        }, 2);
+                this.showLineOneByOne();
+            })
+            .start();
     }
 
     showAllLines(resolve: () => void) {
